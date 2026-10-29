@@ -1,0 +1,79 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="using:Continuum"
+             xmlns:vm="using:Continuum.ViewModels"
+             x:Class="Continuum.App"
+             RequestedThemeVariant="Default">
+
+  <Application.DataTemplates>
+    <!-- Avatar: photo in a circle, or initials on Apple's gray gradient. Size it with Width/Height. -->
+    <DataTemplate DataType="vm:Avatar">
+      <Viewbox Stretch="Uniform">
+        <Panel Width="100" Height="100">
+          <Ellipse Fill="{DynamicResource IosAvatarGradient}" IsVisible="{Binding !HasPhoto}"/>
+          <TextBlock Text="{Binding Initials}" IsVisible="{Binding HasInitials}" Foreground="White"
+                     FontSize="42" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+          <PathIcon Data="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"
+                    Foreground="White" Width="60" Height="60" Margin="0,16,0,0" IsVisible="{Binding IsAnonymous}"/>
+          <Ellipse IsVisible="{Binding HasPhoto}">
+            <Ellipse.Fill>
+              <ImageBrush Source="{Binding Photo}" Stretch="UniformToFill"/>
+            </Ellipse.Fill>
+          </Ellipse>
+        </Panel>
+      </Viewbox>
+    </DataTemplate>
+    <local:ViewLocator/>
+  </Application.DataTemplates>
+
+  <Application.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Light">
+          <SolidColorBrush x:Key="IosBackground" Color="#FFFFFF"/>
+          <SolidColorBrush x:Key="IosGroupedBackground" Color="#F2F2F7"/>
+          <SolidColorBrush x:Key="IosCell" Color="#FFFFFF"/>
+          <SolidColorBrush x:Key="IosLabel" Color="#000000"/>
+          <SolidColorBrush x:Key="IosSecondaryLabel" Color="#8A8A8E"/>
+          <SolidColorBrush x:Key="IosSeparator" Color="#D1D1D6"/>
+          <SolidColorBrush x:Key="IosFill" Color="#E3E3E8"/>
+          <SolidColorBrush x:Key="IosBlue" Color="#007AFF"/>
+          <SolidColorBrush x:Key="IosGreen" Color="#34C759"/>
+          <SolidColorBrush x:Key="IosRed" Color="#FF3B30"/>
+          <SolidColorBrush x:Key="IosBubbleIncoming" Color="#E9E9EB"/>
+          <SolidColorBrush x:Key="IosBubbleIncomingText" Color="#000000"/>
+          <SolidColorBrush x:Key="IosBar" Color="#F7F7F7" Opacity="0.94"/>
+          <LinearGradientBrush x:Key="IosAvatarGradient" StartPoint="50%,0%" EndPoint="50%,100%">
+            <GradientStop Color="#A5ABB8" Offset="0"/>
+            <GradientStop Color="#858994" Offset="1"/>
+          </LinearGradientBrush>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Dark">
+          <SolidColorBrush x:Key="IosBackground" Color="#000000"/>
+          <SolidColorBrush x:Key="IosGroupedBackground" Color="#000000"/>
+          <SolidColorBrush x:Key="IosCell" Color="#1C1C1E"/>
+          <SolidColorBrush x:Key="IosLabel" Color="#FFFFFF"/>
+          <SolidColorBrush x:Key="IosSecondaryLabel" Color="#8D8D93"/>
+          <SolidColorBrush x:Key="IosSeparator" Color="#38383A"/>
+          <SolidColorBrush x:Key="IosFill" Color="#2C2C2E"/>
+          <SolidColorBrush x:Key="IosBlue" Color="#0A84FF"/>
+          <SolidColorBrush x:Key="IosGreen" Color="#30D158"/>
+          <SolidColorBrush x:Key="IosRed" Color="#FF453A"/>
+          <SolidColorBrush x:Key="IosBubbleIncoming" Color="#262628"/>
+          <SolidColorBrush x:Key="IosBubbleIncomingText" Color="#FFFFFF"/>
+          <SolidColorBrush x:Key="IosBar" Color="#161616" Opacity="0.94"/>
+          <LinearGradientBrush x:Key="IosAvatarGradient" StartPoint="50%,0%" EndPoint="50%,100%">
+            <GradientStop Color="#6E7179" Offset="0"/>
+            <GradientStop Color="#55575D" Offset="1"/>
+          </LinearGradientBrush>
+        </ResourceDictionary>
+      </ResourceDictionary.ThemeDictionaries>
+      <FontFamily x:Key="IosFont">Segoe UI Variable Text, Segoe UI, avares://Avalonia.Fonts.Inter/Assets#Inter</FontFamily>
+    </ResourceDictionary>
+  </Application.Resources>
+
+  <Application.Styles>
+    <FluentTheme/>
+    <StyleInclude Source="avares://Continuum/Views/IosStyles.axaml"/>
+  </Application.Styles>
+</Application>

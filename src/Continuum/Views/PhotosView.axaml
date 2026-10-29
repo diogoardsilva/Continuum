@@ -1,0 +1,14 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Continuum.ViewModels"
+             x:Class="Continuum.Views.PhotosView"
+             x:DataType="vm:PhotosViewModel">
+  <Grid RowDefinitions="Auto,*" Background="{DynamicResource IosBackground}">
+    <TextBlock Grid.Row="0" Classes="largeTitle" Text="Fotos" Margin="16,4,16,8"/>
+    <StackPanel Grid.Row="1" VerticalAlignment="Center" Spacing="10" Margin="32">
+      <TextBlock Text="Fotos em iCloud" FontSize="22" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+      <TextBlock Classes="secondary" TextWrapping="Wrap" TextAlignment="Center" TextTrimming="None"
+                 Text="Inicia sessão com a tua Apple ID para veres aqui a tua fototeca, tal como no iCloud.com."/>
+    </StackPanel>
+  </Grid>
+</UserControl>

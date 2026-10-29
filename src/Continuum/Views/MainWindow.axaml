@@ -1,0 +1,61 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Continuum.ViewModels"
+        x:Class="Continuum.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        Title="Continuum"
+        Width="412" Height="872" MinWidth="300" MinHeight="600"
+        SystemDecorations="None"
+        TransparencyLevelHint="Transparent"
+        Background="Transparent"
+        CanResize="True"
+        WindowStartupLocation="CenterScreen">
+
+  <Window.Styles>
+    <Style Selector="TextBlock.onWallpaper">
+      <Setter Property="Foreground" Value="White"/>
+    </Style>
+    <Style Selector="Border.homeIndicator">
+      <Setter Property="Width" Value="134"/>
+      <Setter Property="Height" Value="5"/>
+      <Setter Property="CornerRadius" Value="3"/>
+      <Setter Property="Background" Value="{DynamicResource IosLabel}"/>
+    </Style>
+    <Style Selector="Border.homeIndicator.onWallpaper">
+      <Setter Property="Background" Value="White"/>
+    </Style>
+  </Window.Styles>
+
+  <!-- Phone-shaped window, like iPhone Mirroring on the Mac. -->
+  <Border x:Name="Phone" CornerRadius="52" ClipToBounds="True"
+          Background="{DynamicResource IosBackground}"
+          BorderBrush="#2A2A2C" BorderThickness="6">
+    <Grid RowDefinitions="44,*,22">
+      <!-- Status bar: drag the window from here. -->
+      <Grid x:Name="StatusBar" Grid.Row="0" Background="Transparent" ColumnDefinitions="*,Auto,*" ZIndex="1">
+        <TextBlock x:Name="Clock" Grid.Column="0" FontSize="16" FontWeight="SemiBold" Classes.onWallpaper="{Binding IsHome}"
+                   HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,4,0,0"/>
+        <Border Grid.Column="1" Width="120" Height="34" CornerRadius="17" Background="Black" Margin="0,6,0,0"/>
+        <StackPanel x:Name="WindowButtons" Grid.Column="2" Orientation="Horizontal" Spacing="6"
+                    HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,4,0,0" Opacity="0">
+          <Button Classes="plain" Width="18" Height="18" CornerRadius="9" Background="#FFBD2E" Click="MinimizeClicked" ToolTip.Tip="Minimizar"/>
+          <Button Classes="plain" Width="18" Height="18" CornerRadius="9" Background="#FF5F57" Click="CloseClicked" ToolTip.Tip="Fechar"/>
+        </StackPanel>
+      </Grid>
+
+      <!-- Pages sit between the status bar and the home indicator; the home screen goes edge to edge. -->
+      <TransitioningContentControl Grid.Row="0" Grid.RowSpan="3" Content="{Binding Current}"
+                                   Margin="{Binding IsHome, Converter={x:Static vm:Converters.HomeToMargin}}">
+        <TransitioningContentControl.PageTransition>
+          <CrossFade Duration="0:0:0.15"/>
+        </TransitioningContentControl.PageTransition>
+      </TransitioningContentControl>
+
+      <!-- Home indicator: click to go to the home screen, like swiping up. -->
+      <Button Grid.Row="2" Classes="plain" Command="{Binding GoHomeCommand}" ToolTip.Tip="Ecrã principal" ZIndex="1">
+        <Border Classes="homeIndicator" Classes.onWallpaper="{Binding IsHome}"
+                HorizontalAlignment="Center" VerticalAlignment="Center"/>
+      </Button>
+    </Grid>
+  </Border>
+</Window>

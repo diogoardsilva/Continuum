@@ -1,0 +1,40 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Continuum.ViewModels"
+             x:Class="Continuum.Views.ContactsView"
+             x:DataType="vm:ContactsViewModel">
+  <Grid RowDefinitions="Auto,Auto,*" Background="{DynamicResource IosBackground}">
+    <TextBlock Grid.Row="0" Classes="largeTitle" Text="Contactos" Margin="16,4,16,8"/>
+    <TextBox Grid.Row="1" Classes="search" Watermark="Pesquisar" Text="{Binding Search}" Margin="16,0,16,8"/>
+    <ScrollViewer Grid.Row="2">
+      <StackPanel>
+        <ItemsControl ItemsSource="{Binding Sections}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate x:DataType="vm:ContactSection">
+              <StackPanel>
+                <Border Background="{DynamicResource IosBackground}" Padding="16,10,16,2">
+                  <TextBlock Text="{Binding Letter}" Classes="secondary headline" FontSize="15"/>
+                </Border>
+                <ItemsControl ItemsSource="{Binding Items}">
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:ContactItem">
+                      <Button Classes="plain" Command="{Binding Open}">
+                        <Grid ColumnDefinitions="Auto,*" Height="48" Margin="16,0,0,0">
+                          <ContentControl Grid.Column="0" Content="{Binding Avatar}" Width="34" Height="34" Margin="0,0,12,0"/>
+                          <TextBlock Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center"/>
+                          <Border Grid.Column="1" Classes="separator"/>
+                        </Grid>
+                      </Button>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+              </StackPanel>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <TextBlock Text="{Binding Count, StringFormat='{}{0} contactos'}" Classes="secondary"
+                   HorizontalAlignment="Center" Margin="0,16,0,24"/>
+      </StackPanel>
+    </ScrollViewer>
+  </Grid>
+</UserControl>

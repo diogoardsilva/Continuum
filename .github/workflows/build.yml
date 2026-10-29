@@ -182,6 +182,14 @@ jobs:
           path: dist
           merge-multiple: true
 
+      # The app zip ships with the bridges it starts (iCloud.com and iPhone sync).
+      - name: Bundle app with bridges
+        run: |
+          mkdir -p app && unzip -q dist/Continuum-win-x64.zip -d app
+          cp dist/Continuum.iCloud.exe dist/Continuum.iPhone.exe app/
+          rm dist/Continuum-win-x64.zip
+          (cd app && zip -qr ../dist/Continuum-win-x64.zip .)
+
       # Rolling pre-release so the latest main build is always one click away.
       - name: Update dev release
         env:

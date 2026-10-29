@@ -1,0 +1,83 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <Style Selector=":is(Control)">
+    <Setter Property="TextElement.FontFamily" Value="{DynamicResource IosFont}"/>
+  </Style>
+
+  <Style Selector="TextBlock">
+    <Setter Property="Foreground" Value="{DynamicResource IosLabel}"/>
+    <Setter Property="FontSize" Value="17"/>
+    <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+  </Style>
+  <Style Selector="TextBlock.largeTitle">
+    <Setter Property="FontSize" Value="34"/>
+    <Setter Property="FontWeight" Value="Bold"/>
+  </Style>
+  <Style Selector="TextBlock.headline">
+    <Setter Property="FontWeight" Value="SemiBold"/>
+  </Style>
+  <Style Selector="TextBlock.secondary">
+    <Setter Property="FontSize" Value="15"/>
+    <Setter Property="Foreground" Value="{DynamicResource IosSecondaryLabel}"/>
+  </Style>
+  <Style Selector="TextBlock.caption">
+    <Setter Property="FontSize" Value="12"/>
+    <Setter Property="Foreground" Value="{DynamicResource IosSecondaryLabel}"/>
+  </Style>
+  <Style Selector="TextBlock.blue">
+    <Setter Property="Foreground" Value="{DynamicResource IosBlue}"/>
+  </Style>
+
+  <!-- Rows and nav buttons are plain, like iOS: no Fluent hover boxes. -->
+  <Style Selector="Button.plain">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="Padding" Value="0"/>
+    <Setter Property="CornerRadius" Value="0"/>
+    <Setter Property="HorizontalAlignment" Value="Stretch"/>
+    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+    <Setter Property="Cursor" Value="Hand"/>
+  </Style>
+  <Style Selector="Button.plain:pointerover /template/ ContentPresenter">
+    <Setter Property="Background" Value="Transparent"/>
+  </Style>
+  <Style Selector="Button.plain:pressed /template/ ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource IosFill}"/>
+  </Style>
+  <Style Selector="Button.nav">
+    <Setter Property="HorizontalAlignment" Value="Left"/>
+    <Setter Property="Foreground" Value="{DynamicResource IosBlue}"/>
+  </Style>
+  <Style Selector="Button.nav:pressed /template/ ContentPresenter">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="Opacity" Value="0.4"/>
+  </Style>
+
+  <Style Selector="TextBox.search">
+    <Setter Property="Background" Value="{DynamicResource IosFill}"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="CornerRadius" Value="10"/>
+    <Setter Property="MinHeight" Value="36"/>
+    <Setter Property="Padding" Value="10,7"/>
+    <Setter Property="FontSize" Value="17"/>
+    <Setter Property="Foreground" Value="{DynamicResource IosLabel}"/>
+  </Style>
+  <Style Selector="TextBox.search:focus /template/ Border#PART_BorderElement">
+    <Setter Property="Background" Value="{DynamicResource IosFill}"/>
+    <Setter Property="BorderThickness" Value="0"/>
+  </Style>
+  <Style Selector="TextBox.search:pointerover /template/ Border#PART_BorderElement">
+    <Setter Property="Background" Value="{DynamicResource IosFill}"/>
+  </Style>
+
+  <Style Selector="Border.separator">
+    <Setter Property="Height" Value="0.5"/>
+    <Setter Property="Background" Value="{DynamicResource IosSeparator}"/>
+    <Setter Property="VerticalAlignment" Value="Bottom"/>
+  </Style>
+
+  <Style Selector="ScrollViewer">
+    <Setter Property="HorizontalScrollBarVisibility" Value="Disabled"/>
+  </Style>
+</Styles>

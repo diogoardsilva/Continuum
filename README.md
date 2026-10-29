@@ -26,7 +26,7 @@ Fase 0: testes de viabilidade no hardware real.
 Cada commit em `main` gera uma [versão de desenvolvimento](../../releases/tag/dev) com:
 
 - `Continuum.BtHidProbe.exe`: o teste do rato Bluetooth.
-- `Continuum-win-x64.zip`: a app (por agora só a janela).
+- `Continuum-win-x64.zip`: **a app Continuum** (ecrã principal, Telefone, Mensagens, Contactos e Fotos com aspeto de iPhone). Extrai e abre `Continuum.exe`. Mostra dados de exemplo até sincronizares o iPhone com `Continuum.iPhone.exe`.
 - `Continuum-AirPlay-win-x64.zip`: o recetor AirPlay (UxPlay) pronto a usar.
 - `Continuum.iPhone.exe`: copia do iPhone (por cabo) as mensagens, o histórico de chamadas e os contactos.
 - `Continuum.iCloud.exe`: o teste do iCloud.com (sessão, contactos e fotos).
@@ -85,8 +85,9 @@ O teste mostra quantos contactos encontrou e exporta tudo para `Documentos\Conti
 
 ## Compilar
 
-Requer o .NET 8 SDK no Windows:
+Requer o .NET 8 SDK. A app usa Avalonia, por isso também compila em Linux; `tools/UiSnapshots` gera imagens de cada ecrã sem precisar de Windows:
 
 ```
 dotnet build Continuum.sln -c Release
+dotnet run --project tools/UiSnapshots -- snapshots
 ```

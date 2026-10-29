@@ -1,0 +1,47 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Continuum.ViewModels"
+             x:Class="Continuum.Views.ContactDetailView"
+             x:DataType="vm:ContactDetailViewModel">
+  <Grid RowDefinitions="Auto,*" Background="{DynamicResource IosGroupedBackground}">
+    <Button Grid.Row="0" Classes="plain nav" Command="{Binding Main.BackCommand}" Margin="8,4">
+      <TextBlock Classes="blue" Text="{Binding BackLabel, StringFormat='‹ {0}'}"/>
+    </Button>
+    <ScrollViewer Grid.Row="1">
+      <StackPanel Spacing="16" Margin="16,0,16,24">
+        <ContentControl Content="{Binding Avatar}" Width="120" Height="120" HorizontalAlignment="Center"/>
+        <StackPanel HorizontalAlignment="Center" Spacing="2">
+          <TextBlock Text="{Binding Name}" FontSize="28" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+          <TextBlock Text="{Binding Organization}" Classes="secondary" HorizontalAlignment="Center"
+                     IsVisible="{Binding Organization, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+        </StackPanel>
+
+        <Button Classes="plain" Command="{Binding OpenMessages}" HorizontalAlignment="Center">
+          <Border Background="{DynamicResource IosCell}" CornerRadius="12" Width="86" Height="62">
+            <StackPanel VerticalAlignment="Center" Spacing="4">
+              <PathIcon Data="M12,3C17.5,3 22,6.58 22,11C22,15.42 17.5,19 12,19C10.76,19 9.57,18.82 8.47,18.5C5.55,21 2,21 2,21C4.33,18.67 4.7,17.1 4.75,16.5C3.05,15.07 2,13.13 2,11C2,6.58 6.5,3 12,3Z"
+                        Foreground="{DynamicResource IosBlue}" Width="22" Height="22"/>
+              <TextBlock Text="mensagem" FontSize="12" Classes="blue" HorizontalAlignment="Center"/>
+            </StackPanel>
+          </Border>
+        </Button>
+
+        <Border Background="{DynamicResource IosCell}" CornerRadius="12">
+          <ItemsControl ItemsSource="{Binding Rows}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate x:DataType="vm:ContactRow">
+                <Grid Margin="16,0,0,0">
+                  <StackPanel Margin="0,10,16,10" Spacing="2">
+                    <TextBlock Text="{Binding Label}" FontSize="14"/>
+                    <TextBlock Text="{Binding Value}" Classes="blue"/>
+                  </StackPanel>
+                  <Border Classes="separator"/>
+                </Grid>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </Border>
+      </StackPanel>
+    </ScrollViewer>
+  </Grid>
+</UserControl>
