@@ -1,0 +1,54 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Build
+        run: dotnet build Continuum.sln -c Release
+
+      - name: Publish
+        shell: pwsh
+        run: |
+          $common = @('-c', 'Release', '-r', 'win-x64', '--self-contained', 'true',
+                      '-p:PublishSingleFile=true', '-p:IncludeNativeLibrariesForSelfExtract=true')
+          dotnet publish src/Continuum/Continuum.csproj @common -o publish/Continuum
+          dotnet publish tools/BtHidProbe/BtHidProbe.csproj @common -o publish/BtHidProbe
+          Compress-Archive publish/Continuum/* publish/Continuum-win-x64.zip
+          Copy-Item publish/BtHidProbe/Continuum.BtHidProbe.exe publish/Continuum.BtHidProbe.exe
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: continuum-win-x64
+          path: |
+            publish/Continuum-win-x64.zip
+            publish/Continuum.BtHidProbe.exe
+
+      # Rolling pre-release so the latest main build is always one click away.
+      - name: Update dev release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete dev --yes --cleanup-tag 2>$null
+          $global:LASTEXITCODE = 0
+          gh release create dev --prerelease --target $env:GITHUB_SHA `
+            --title "Versão de desenvolvimento" `
+            --notes "Compilação automática do último commit em main ($env:GITHUB_SHA)." `
+            publish/Continuum-win-x64.zip publish/Continuum.BtHidProbe.exe

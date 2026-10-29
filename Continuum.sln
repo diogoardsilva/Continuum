@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{3C3566B2-04A0-4DBD-AA56-6ED911E2825B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BtHidProbe", "tools\BtHidProbe\BtHidProbe.csproj", "{D20440FD-B523-4CFC-ABF1-7AE14D47B147}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{FE6C41FA-5BCB-462D-A9FA-37902DFDFCBC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Continuum", "src\Continuum\Continuum.csproj", "{A42256B9-4D01-433F-AA6B-6821C80B0FF5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A42256B9-4D01-433F-AA6B-6821C80B0FF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A42256B9-4D01-433F-AA6B-6821C80B0FF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A42256B9-4D01-433F-AA6B-6821C80B0FF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A42256B9-4D01-433F-AA6B-6821C80B0FF5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D20440FD-B523-4CFC-ABF1-7AE14D47B147}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D20440FD-B523-4CFC-ABF1-7AE14D47B147}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D20440FD-B523-4CFC-ABF1-7AE14D47B147}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D20440FD-B523-4CFC-ABF1-7AE14D47B147}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A42256B9-4D01-433F-AA6B-6821C80B0FF5} = {FE6C41FA-5BCB-462D-A9FA-37902DFDFCBC}
+		{D20440FD-B523-4CFC-ABF1-7AE14D47B147} = {3C3566B2-04A0-4DBD-AA56-6ED911E2825B}
+	EndGlobalSection
+EndGlobal
