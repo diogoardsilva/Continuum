@@ -46,7 +46,7 @@ Se o Continuum não aparecer na lista do iPhone, quase sempre é a firewall: con
 
 ## Teste de toques pelo WebDriverAgent (USB)
 
-Só é preciso fazer a preparação uma vez (e reinstalar o WebDriverAgent a cada 7 dias com uma Apple ID gratuita):
+Guia completo passo a passo: [docs/INSTALAR-NO-IPHONE.md](docs/INSTALAR-NO-IPHONE.md). Resumo:
 
 1. Instala a app **Apple Devices** da Microsoft Store (ou o iTunes), liga o iPhone por cabo e aceita "Confiar neste computador".
 2. Instala o [Sideloadly](https://sideloadly.io), arrasta para lá o `WebDriverAgent-unsigned.ipa`, escolhe a tua Apple ID e carrega em Start.
