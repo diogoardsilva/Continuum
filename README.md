@@ -18,6 +18,7 @@ Fase 0: testes de viabilidade no hardware real.
 | Ver o ecrã do iPhone por AirPlay | `Continuum-AirPlay` (UxPlay) | à espera de teste |
 | Tocar no iPhone a partir do PC (WebDriverAgent) | `Continuum-USB` (go-ios) | à espera de teste |
 | Ler contactos com fotos (iCloud ou backup) | `tools/ContactsTool` | à espera de teste |
+| Iniciar sessão no iCloud.com e ler contactos e fotos | `bridge/` (pyicloud) | à espera de teste |
 
 ## Descarregar
 
@@ -26,6 +27,7 @@ Cada commit em `main` gera uma [versão de desenvolvimento](../../releases/tag/d
 - `Continuum.BtHidProbe.exe`: o teste do rato Bluetooth.
 - `Continuum-win-x64.zip`: a app (por agora só a janela).
 - `Continuum-AirPlay-win-x64.zip`: o recetor AirPlay (UxPlay) pronto a usar.
+- `Continuum.iCloud.exe`: o teste do iCloud.com (sessão, contactos e fotos).
 - `Continuum.Contactos.exe`: o teste dos contactos (iCloud ou backup).
 - `Continuum-USB-win-x64.zip`: go-ios e o teste de toques pelo WebDriverAgent.
 - `WebDriverAgent-unsigned.ipa`: o WebDriverAgent por assinar, para instalar com a tua Apple ID.
@@ -57,6 +59,12 @@ Guia completo passo a passo: [docs/INSTALAR-NO-IPHONE.md](docs/INSTALAR-NO-IPHON
 5. Extrai `Continuum-USB-win-x64.zip` e abre `test-wda.cmd`.
 
 O teste leva o iPhone ao ecrã principal e toca no centro do ecrã.
+
+## Teste do iCloud.com
+
+Abre `Continuum.iCloud.exe`. Pede a Apple ID, a palavra-passe normal e o código de 6 dígitos, exatamente como o iCloud.com no browser. Depois lê os contactos (com fotos) e as 20 fotos mais recentes e guarda-os em `Documentos\Continuum\iCloud`.
+
+A palavra-passe não fica guardada. A sessão confiável fica em `%LOCALAPPDATA%\Continuum\icloud`, para não pedir o código sempre.
 
 ## Teste dos contactos
 
