@@ -39,16 +39,71 @@ jobs:
             publish/Continuum-win-x64.zip
             publish/Continuum.BtHidProbe.exe
 
+  airplay:
+    runs-on: windows-latest
+    env:
+      # UxPlay master with the built-in mDNS (no Bonjour SDK needed).
+      UXPLAY_REF: 534e2cc0e558d6c94bcc66964f8fc13ad73a6cdc
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          install: >-
+            git
+            mingw-w64-ucrt-x86_64-cmake
+            mingw-w64-ucrt-x86_64-ninja
+            mingw-w64-ucrt-x86_64-gcc
+            mingw-w64-ucrt-x86_64-openssl
+            mingw-w64-ucrt-x86_64-libplist
+            mingw-w64-ucrt-x86_64-gstreamer
+            mingw-w64-ucrt-x86_64-gst-plugins-base
+            mingw-w64-ucrt-x86_64-gst-plugins-good
+            mingw-w64-ucrt-x86_64-gst-plugins-bad
+            mingw-w64-ucrt-x86_64-gst-libav
+
+      - name: Fetch UxPlay
+        run: |
+          git init -q uxplay
+          git -C uxplay fetch -q --depth 1 https://github.com/FDH2/UxPlay "$UXPLAY_REF"
+          git -C uxplay checkout -q FETCH_HEAD
+
+      - name: Build and bundle
+        run: |
+          scripts/bundle-uxplay.sh uxplay publish/Continuum-AirPlay
+
+      - name: Zip
+        shell: pwsh
+        run: Compress-Archive publish/Continuum-AirPlay publish/Continuum-AirPlay-win-x64.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: continuum-airplay-win-x64
+          path: publish/Continuum-AirPlay-win-x64.zip
+
+  release:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [windows, airplay]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
       # Rolling pre-release so the latest main build is always one click away.
       - name: Update dev release
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
         run: |
-          gh release delete dev --yes --cleanup-tag 2>$null
-          $global:LASTEXITCODE = 0
-          gh release create dev --prerelease --target $env:GITHUB_SHA `
-            --title "Versão de desenvolvimento" `
-            --notes "Compilação automática do último commit em main ($env:GITHUB_SHA)." `
-            publish/Continuum-win-x64.zip publish/Continuum.BtHidProbe.exe
+          gh release delete dev --yes --cleanup-tag || true
+          gh release create dev --prerelease --target "$GITHUB_SHA" \
+            --title "Versão de desenvolvimento" \
+            --notes "Compilação automática do último commit em main ($GITHUB_SHA)." \
+            dist/*

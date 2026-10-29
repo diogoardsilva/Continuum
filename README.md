@@ -15,7 +15,7 @@ Fase 0: testes de viabilidade no hardware real.
 | Teste | Ferramenta | Estado |
 |---|---|---|
 | O Windows consegue fazer de rato Bluetooth para o iPhone? | `tools/BtHidProbe` | à espera de teste |
-| Ver o ecrã do iPhone por AirPlay | | por fazer |
+| Ver o ecrã do iPhone por AirPlay | `Continuum-AirPlay` (UxPlay) | à espera de teste |
 | Tocar no iPhone a partir do PC (WebDriverAgent) | | por fazer |
 
 ## Descarregar
@@ -24,6 +24,7 @@ Cada commit em `main` gera uma [versão de desenvolvimento](../../releases/tag/d
 
 - `Continuum.BtHidProbe.exe`: o teste do rato Bluetooth.
 - `Continuum-win-x64.zip`: a app (por agora só a janela).
+- `Continuum-AirPlay-win-x64.zip`: o recetor AirPlay (UxPlay) pronto a usar.
 
 ## Teste do rato Bluetooth
 
@@ -31,6 +32,15 @@ Cada commit em `main` gera uma [versão de desenvolvimento](../../releases/tag/d
 2. No iPhone liga o AssistiveTouch: Definições > Acessibilidade > Toque > AssistiveTouch.
 3. No iPhone abre Definições > Bluetooth e emparelha com o PC.
 4. Usa as setas no PC para mover o cursor no iPhone, Espaço para clicar, H para o ecrã principal.
+
+## Teste do ecrã por AirPlay
+
+1. Descarrega e extrai `Continuum-AirPlay-win-x64.zip`.
+2. Abre `uxplay.cmd` dentro da pasta. Quando o Windows perguntar pela firewall, permite em redes privadas.
+3. Com o iPhone na mesma rede Wi‑Fi, abre o Centro de Controlo > Duplicar ecrã > **Continuum**.
+4. O ecrã do iPhone deve aparecer numa janela no PC.
+
+Se o Continuum não aparecer na lista do iPhone, quase sempre é a firewall: confirma que a rede Wi‑Fi está marcada como privada no Windows.
 
 ## Compilar
 
