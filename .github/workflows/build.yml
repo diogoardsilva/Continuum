@@ -50,6 +50,8 @@ jobs:
           dotnet publish tools/BtHidProbe/BtHidProbe.csproj @common -o publish/BtHidProbe
           dotnet publish tools/ContactsTool/ContactsTool.csproj @common -o publish/ContactsTool
           Copy-Item publish/ContactsTool/Continuum.Contactos.exe publish/Continuum.Contactos.exe
+          dotnet publish tools/AncsListener/AncsListener.csproj @common -o publish/Notificacoes
+          Copy-Item publish/Notificacoes/Continuum.Notificacoes.exe publish/Continuum/
           Compress-Archive publish/Continuum/* publish/Continuum-win-x64.zip
           Copy-Item publish/BtHidProbe/Continuum.BtHidProbe.exe publish/Continuum.BtHidProbe.exe
 

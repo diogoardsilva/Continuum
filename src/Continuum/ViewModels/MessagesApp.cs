@@ -26,17 +26,34 @@ public sealed class ConversationPane
 public sealed partial class MessagesAppViewModel : ObservableObject
 {
     readonly IPhoneLibrary _library;
-    readonly List<ConversationItem> _all;
+    List<ConversationItem> _all;
 
     public MessagesAppViewModel(AppServices services)
     {
         _library = services.Library;
-        _all = _library.Conversations
-            .Select(c => new ConversationItem(c, Chat.Title(_library, c), Chat.Preview(c.Messages[^1]),
-                Format.ListDate(c.Messages[^1].Date), Chat.Avatar(_library, c)))
-            .ToList();
+        _all = Build();
         _items = _all;
         Selected = _all.FirstOrDefault();
+        if (_library is LivePhoneLibrary live)
+        {
+            live.Changed += () => Avalonia.Threading.Dispatcher.UIThread.Post(Refresh);
+        }
+    }
+
+    List<ConversationItem> Build() => _library.Conversations
+        .OrderByDescending(c => c.Messages[^1].Date)
+        .Select(c => new ConversationItem(c, Chat.Title(_library, c), Chat.Preview(c.Messages[^1]),
+            Format.ListDate(c.Messages[^1].Date), Chat.Avatar(_library, c)))
+        .ToList();
+
+    /// <summary>New messages arrived from the iPhone's notifications: rebuild, keeping the open conversation.</summary>
+    void Refresh()
+    {
+        var open = Selected?.Conversation;
+        _all = Build();
+        OnSearchChanged(Search);
+        Selected = _all.FirstOrDefault(i => open is not null && i.Conversation.Id == open.Id) ?? _all.FirstOrDefault();
+        OnPropertyChanged(nameof(IsEmpty));
     }
 
     [ObservableProperty]

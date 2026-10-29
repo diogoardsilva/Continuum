@@ -17,11 +17,16 @@ public sealed class AppServices : IAsyncDisposable
     /// <summary>Starts Continuum.iCloud.exe the first time an app needs iCloud.com.</summary>
     public Task<ICloudBridge> GetICloudAsync() => _bridge ??= ICloudBridge.StartAsync();
 
-    public static AppServices LoadDefault() =>
-        new(BackupPhoneLibrary.TryOpenDefault() as IPhoneLibrary ?? new SamplePhoneLibrary(), Settings.Load());
+    public static AppServices LoadDefault()
+    {
+        var synced = BackupPhoneLibrary.TryOpenDefault() as IPhoneLibrary ?? new SamplePhoneLibrary();
+        LivePhoneLibrary.StartListener();
+        return new(new LivePhoneLibrary(synced, Core.Live.LiveMessageStore.DefaultPath), Settings.Load());
+    }
 
     public async ValueTask DisposeAsync()
     {
+        (Library as IDisposable)?.Dispose();
         if (_bridge is { IsCompletedSuccessfully: true }) await _bridge.Result.DisposeAsync();
     }
 }
