@@ -2,6 +2,8 @@
 
 Espelhar e controlar o iPhone a partir do Windows, ao estilo do iPhone Mirroring do macOS.
 
+**Foco atual:** as apps Mensagens, FaceTime, Telefone, Contactos e Fotos no Windows, separadas como no Mac, com os dados do iCloud.com e do iPhone. O espelhamento e o controlo do iPhone ficam para depois.
+
 O iPhone Mirroring da Apple não pode ser imitado diretamente (precisa do Secure Enclave de um Mac e está desativado na UE), por isso o Continuum junta peças que funcionam no Windows:
 
 - **Vídeo**: recetor AirPlay ("Duplicar ecrã" no iPhone).
@@ -26,7 +28,7 @@ Fase 0: testes de viabilidade no hardware real.
 Cada commit em `main` gera uma [versão de desenvolvimento](../../releases/tag/dev) com:
 
 - `Continuum.BtHidProbe.exe`: o teste do rato Bluetooth.
-- `Continuum-win-x64.zip`: **a app Continuum** (ecrã principal, Telefone, Mensagens, Contactos e Fotos com aspeto de iPhone). Extrai e abre `Continuum.exe`. Mostra dados de exemplo até sincronizares o iPhone com `Continuum.iPhone.exe`.
+- `Continuum-win-x64.zip`: **as apps Continuum**: Mensagens, FaceTime, Telefone, Contactos e Fotos, cada uma separada e ao estilo Mac (barra lateral). Extrai e abre `Continuum.exe`; no lançador, carrega em "Adicionar as apps ao menu Iniciar" para cada app ficar com o seu atalho e ícone. Mostram dados de exemplo até copiares os do iPhone com `Continuum.iPhone.exe`.
 - `Continuum-AirPlay-win-x64.zip`: o recetor AirPlay (UxPlay) pronto a usar.
 - `Continuum.iPhone.exe`: copia do iPhone (por cabo) as mensagens, o histórico de chamadas e os contactos.
 - `Continuum.iCloud.exe`: o teste do iCloud.com (sessão, contactos e fotos).

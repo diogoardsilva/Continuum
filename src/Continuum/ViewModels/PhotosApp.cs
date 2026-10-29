@@ -11,28 +11,27 @@ public enum PhotosState { SignedOut, Code, Busy, Ready, Unavailable }
 
 public sealed partial class PhotoTile : ObservableObject
 {
-    public PhotoTile(ICloudPhoto photo, IRelayCommand open)
-    {
-        Photo = photo;
-        Open = open;
-    }
+    public PhotoTile(ICloudPhoto photo) => Photo = photo;
 
     public ICloudPhoto Photo { get; }
-    public IRelayCommand Open { get; }
     public bool IsVideo => Photo.Type == "movie";
 
     [ObservableProperty]
     private Bitmap? _thumbnail;
 }
 
-public sealed partial class PhotosViewModel : PageViewModel
+/// <summary>Fotos: signs in to iCloud.com through the bridge and shows the library.</summary>
+public sealed partial class PhotosAppViewModel : ObservableObject
 {
-    const int PageSize = 120;
+    const int PageSize = 200;
     const int ParallelThumbnails = 4;
 
-    public PhotosViewModel(MainViewModel main) : base(main)
+    readonly AppServices _services;
+
+    public PhotosAppViewModel(AppServices services)
     {
-        _appleId = main.Settings.AppleId ?? "";
+        _services = services;
+        _appleId = services.Settings.AppleId ?? "";
         if (!ICloudBridge.IsAvailable)
         {
             State = PhotosState.Unavailable;
@@ -43,13 +42,12 @@ public sealed partial class PhotosViewModel : PageViewModel
             _ = RunAsync(async bridge =>
             {
                 var status = await bridge.ResumeAsync(_appleId);
-                if (status.IsOk) await LoadAsync(bridge);
+                if (status.IsOk) await LoadAsync(bridge, status.Name);
                 else State = PhotosState.SignedOut;
             });
         }
     }
 
-    public override string Title => "Fotos";
     public ObservableCollection<PhotoTile> Photos { get; } = new();
 
     [ObservableProperty]
@@ -66,6 +64,15 @@ public sealed partial class PhotosViewModel : PageViewModel
     [ObservableProperty] private string _password = "";
     [ObservableProperty] private string _code = "";
     [ObservableProperty] private string? _message;
+    [ObservableProperty] private string? _accountName;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsViewing))]
+    private PhotoTile? _viewing;
+
+    [ObservableProperty] private Bitmap? _viewingImage;
+
+    public bool IsViewing => Viewing is not null;
 
     [RelayCommand]
     Task SignIn() => RunAsync(async bridge =>
@@ -83,6 +90,25 @@ public sealed partial class PhotosViewModel : PageViewModel
         await Handle(bridge, status);
     });
 
+    [RelayCommand]
+    async Task Open(PhotoTile tile)
+    {
+        Viewing = tile;
+        ViewingImage = tile.Thumbnail;
+        var bridge = await _services.GetICloudAsync();
+        // "medium" is a JPEG; originals are often HEIC, which Windows cannot decode without extensions.
+        var version = tile.Photo.Versions.Contains("medium") ? "medium" : "thumb";
+        var image = Images.TryDecode(await bridge.GetPhotoAsync(tile.Photo.Id, version));
+        if (Viewing == tile && image is not null) ViewingImage = image;
+    }
+
+    [RelayCommand]
+    void Close()
+    {
+        Viewing = null;
+        ViewingImage = null;
+    }
+
     async Task Handle(ICloudBridge bridge, BridgeStatus status)
     {
         if (status.NeedsCode)
@@ -94,9 +120,9 @@ public sealed partial class PhotosViewModel : PageViewModel
         }
         else if (status.IsOk)
         {
-            Main.Settings.AppleId = AppleId.Trim();
-            Main.Settings.Save();
-            await LoadAsync(bridge);
+            _services.Settings.AppleId = AppleId.Trim();
+            _services.Settings.Save();
+            await LoadAsync(bridge, status.Name);
         }
         else
         {
@@ -105,16 +131,14 @@ public sealed partial class PhotosViewModel : PageViewModel
         }
     }
 
-    async Task LoadAsync(ICloudBridge bridge)
+    async Task LoadAsync(ICloudBridge bridge, string? name)
     {
+        AccountName = name;
         State = PhotosState.Busy;
         Message = "A carregar a fototeca…";
         var photos = await bridge.GetPhotosAsync(0, PageSize);
         Photos.Clear();
-        foreach (var p in photos)
-        {
-            Photos.Add(new PhotoTile(p, new RelayCommand(() => Main.Open(new PhotoDetailViewModel(Main, p)))));
-        }
+        foreach (var p in photos) Photos.Add(new PhotoTile(p));
         State = PhotosState.Ready;
         Message = null;
 
@@ -124,8 +148,7 @@ public sealed partial class PhotosViewModel : PageViewModel
             await gate.WaitAsync();
             try
             {
-                var bytes = await bridge.GetPhotoAsync(tile.Photo.Id, "thumb");
-                var bitmap = Images.TryDecode(bytes, 240);
+                var bitmap = Images.TryDecode(await bridge.GetPhotoAsync(tile.Photo.Id, "thumb"), 320);
                 await Dispatcher.UIThread.InvokeAsync(() => tile.Thumbnail = bitmap);
             }
             finally
@@ -141,34 +164,12 @@ public sealed partial class PhotosViewModel : PageViewModel
         State = PhotosState.Busy;
         try
         {
-            await action(await Main.GetICloudAsync());
+            await action(await _services.GetICloudAsync());
         }
         catch (Exception ex)
         {
             State = previous == PhotosState.Busy ? PhotosState.SignedOut : previous;
             Message = "Não foi possível falar com o iCloud: " + ex.Message;
         }
-    }
-}
-
-public sealed partial class PhotoDetailViewModel : PageViewModel
-{
-    public PhotoDetailViewModel(MainViewModel main, ICloudPhoto photo) : base(main)
-    {
-        Photo = photo;
-        _ = LoadAsync();
-    }
-
-    public ICloudPhoto Photo { get; }
-    public override string Title => Photo.Created is { } d ? Format.ChatHeader(d) : Photo.FileName ?? "";
-
-    [ObservableProperty] private Bitmap? _image;
-
-    async Task LoadAsync()
-    {
-        var bridge = await Main.GetICloudAsync();
-        // "medium" is a JPEG; originals are often HEIC, which Windows apps cannot decode without extensions.
-        var version = Photo.Versions.Contains("medium") ? "medium" : "thumb";
-        Image = Images.TryDecode(await bridge.GetPhotoAsync(Photo.Id, version));
     }
 }

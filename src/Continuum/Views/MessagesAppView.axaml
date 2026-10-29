@@ -1,0 +1,94 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Continuum.ViewModels"
+             x:Class="Continuum.Views.MessagesAppView"
+             x:DataType="vm:MessagesAppViewModel">
+  <UserControl.Styles>
+    <Style Selector="Border.bubble">
+      <Setter Property="CornerRadius" Value="18"/>
+      <Setter Property="Padding" Value="12,7"/>
+      <Setter Property="MaxWidth" Value="420"/>
+      <Setter Property="Background" Value="{DynamicResource IosBubbleIncoming}"/>
+      <Setter Property="HorizontalAlignment" Value="Left"/>
+    </Style>
+    <Style Selector="Border.bubble.mine">
+      <Setter Property="Background" Value="{DynamicResource IosBlue}"/>
+      <Setter Property="HorizontalAlignment" Value="Right"/>
+    </Style>
+    <Style Selector="Border.bubble.mine.sms">
+      <Setter Property="Background" Value="{DynamicResource IosGreen}"/>
+    </Style>
+    <Style Selector="Border.bubble TextBlock.text">
+      <Setter Property="Foreground" Value="{DynamicResource IosBubbleIncomingText}"/>
+      <Setter Property="TextWrapping" Value="Wrap"/>
+      <Setter Property="TextTrimming" Value="None"/>
+      <Setter Property="FontSize" Value="15"/>
+    </Style>
+    <Style Selector="Border.bubble.mine TextBlock.text">
+      <Setter Property="Foreground" Value="White"/>
+    </Style>
+  </UserControl.Styles>
+
+  <Grid ColumnDefinitions="320,*">
+    <!-- Sidebar: search and conversations -->
+    <Grid Grid.Column="0" RowDefinitions="44,Auto,*">
+      <TextBox Grid.Row="1" Classes="search" Watermark="Pesquisar" Text="{Binding Search}" Margin="12,0,12,8"/>
+      <ListBox Grid.Row="2" Classes="sidebar" ItemsSource="{Binding Items}" SelectedItem="{Binding Selected}">
+        <ListBox.ItemTemplate>
+          <DataTemplate x:DataType="vm:ConversationItem">
+            <Grid ColumnDefinitions="Auto,*">
+              <ContentControl Grid.Column="0" Content="{Binding Avatar}" Width="40" Height="40" Margin="0,0,10,0" VerticalAlignment="Center"/>
+              <Grid Grid.Column="1" RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto">
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Title}" Classes="headline" FontSize="14"/>
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Date}" Classes="secondary" FontSize="12" Margin="6,0,0,0"/>
+                <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding Preview}" Classes="secondary" FontSize="13"
+                           TextWrapping="Wrap" MaxLines="2"/>
+              </Grid>
+            </Grid>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+    </Grid>
+
+    <!-- Conversation -->
+    <Border Grid.Column="1" Classes="pane">
+      <Grid RowDefinitions="Auto,*,Auto" DataContext="{Binding Pane}" x:DataType="vm:ConversationPane">
+        <Grid Grid.Row="0" Height="52" Margin="16,0,140,0" ColumnDefinitions="Auto,*">
+          <ContentControl Grid.Column="0" Content="{Binding Avatar}" Width="30" Height="30" Margin="0,0,10,0"/>
+          <StackPanel Grid.Column="1" VerticalAlignment="Center">
+            <TextBlock Text="{Binding Title}" Classes="headline" FontSize="14"/>
+            <TextBlock Text="{Binding Subtitle}" Classes="caption"/>
+          </StackPanel>
+        </Grid>
+        <Border Grid.Row="0" Classes="separator"/>
+
+        <ScrollViewer x:Name="Scroller" Grid.Row="1">
+          <ItemsControl ItemsSource="{Binding Rows}" Margin="20,8,20,12">
+            <ItemsControl.DataTemplates>
+              <DataTemplate DataType="vm:TimeRow">
+                <TextBlock Text="{Binding Text}" Classes="caption" HorizontalAlignment="Center" Margin="0,12,0,6"/>
+              </DataTemplate>
+              <DataTemplate DataType="vm:BubbleRow">
+                <StackPanel Margin="0,2">
+                  <TextBlock Text="{Binding SenderName}" Classes="caption" Margin="14,4,0,2" IsVisible="{Binding ShowSender}"/>
+                  <Border Classes="bubble" Classes.mine="{Binding IsFromMe}" Classes.sms="{Binding IsSms}" IsVisible="{Binding HasText}">
+                    <TextBlock Classes="text" Text="{Binding Text}"/>
+                  </Border>
+                  <Border CornerRadius="18" ClipToBounds="True" MaxWidth="320" IsVisible="{Binding HasImage}"
+                          HorizontalAlignment="{Binding IsFromMe, Converter={x:Static vm:Converters.MineToAlignment}}">
+                    <Image Source="{Binding Image}" Stretch="Uniform"/>
+                  </Border>
+                  <Border Classes="bubble" Classes.mine="{Binding IsFromMe}" Classes.sms="{Binding IsSms}" IsVisible="{Binding HasFile}">
+                    <TextBlock Classes="text" Text="{Binding AttachmentName, StringFormat='Anexo: {0}'}"/>
+                  </Border>
+                </StackPanel>
+              </DataTemplate>
+            </ItemsControl.DataTemplates>
+          </ItemsControl>
+        </ScrollViewer>
+
+        <TextBox Grid.Row="2" Classes="search" CornerRadius="18" Watermark="iMessage" IsEnabled="False" Margin="16,6,16,12"/>
+      </Grid>
+    </Border>
+  </Grid>
+</UserControl>

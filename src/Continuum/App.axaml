@@ -23,7 +23,6 @@
         </Panel>
       </Viewbox>
     </DataTemplate>
-    <local:ViewLocator/>
   </Application.DataTemplates>
 
   <Application.Resources>
@@ -43,6 +42,8 @@
           <SolidColorBrush x:Key="IosBubbleIncoming" Color="#E9E9EB"/>
           <SolidColorBrush x:Key="IosBubbleIncomingText" Color="#000000"/>
           <SolidColorBrush x:Key="IosBar" Color="#F7F7F7" Opacity="0.94"/>
+          <SolidColorBrush x:Key="MacWindowTint" Color="#ECECF0" Opacity="0.72"/>
+          <SolidColorBrush x:Key="MacSelection" Color="#0A64D6"/>
           <LinearGradientBrush x:Key="IosAvatarGradient" StartPoint="50%,0%" EndPoint="50%,100%">
             <GradientStop Color="#A5ABB8" Offset="0"/>
             <GradientStop Color="#858994" Offset="1"/>
@@ -62,6 +63,8 @@
           <SolidColorBrush x:Key="IosBubbleIncoming" Color="#262628"/>
           <SolidColorBrush x:Key="IosBubbleIncomingText" Color="#FFFFFF"/>
           <SolidColorBrush x:Key="IosBar" Color="#161616" Opacity="0.94"/>
+          <SolidColorBrush x:Key="MacWindowTint" Color="#232326" Opacity="0.78"/>
+          <SolidColorBrush x:Key="MacSelection" Color="#0A5FCC"/>
           <LinearGradientBrush x:Key="IosAvatarGradient" StartPoint="50%,0%" EndPoint="50%,100%">
             <GradientStop Color="#6E7179" Offset="0"/>
             <GradientStop Color="#55575D" Offset="1"/>

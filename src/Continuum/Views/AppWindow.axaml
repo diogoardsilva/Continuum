@@ -1,0 +1,17 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Continuum.ViewModels"
+        xmlns:v="using:Continuum.Views"
+        x:Class="Continuum.Views.AppWindow"
+        Width="1040" Height="700" MinWidth="720" MinHeight="460"
+        WindowStartupLocation="CenterScreen"
+        ExtendClientAreaToDecorationsHint="True"
+        TransparencyLevelHint="Mica, AcrylicBlur, None"
+        Background="{DynamicResource MacWindowTint}">
+  <Window.DataTemplates>
+    <DataTemplate DataType="vm:MessagesAppViewModel"><v:MessagesAppView/></DataTemplate>
+    <DataTemplate DataType="vm:ContactsAppViewModel"><v:ContactsAppView/></DataTemplate>
+    <DataTemplate DataType="vm:PhotosAppViewModel"><v:PhotosAppView/></DataTemplate>
+    <DataTemplate DataType="vm:CallsAppViewModel"><v:CallsAppView/></DataTemplate>
+  </Window.DataTemplates>
+</Window>

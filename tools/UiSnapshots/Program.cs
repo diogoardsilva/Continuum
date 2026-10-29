@@ -1,14 +1,14 @@
-// Renders each screen of the app with sample data to PNG files, so the UI can
-// be reviewed without a Windows machine: dotnet run -- <output-dir> [dark]
+// Renders each app window with sample data to PNG files, so the UI can be
+// reviewed without a Windows machine: dotnet run -- <output-dir> [dark]
 
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Headless;
 using Avalonia.Styling;
 using Avalonia.Threading;
 using Continuum;
 using Continuum.Services;
 using Continuum.ViewModels;
-using Continuum.Views;
 
 var output = args.Length > 0 ? args[0] : "snapshots";
 var dark = args.Contains("dark");
@@ -21,43 +21,27 @@ AppBuilder.Configure<App>()
     .SetupWithoutStarting();
 
 Application.Current!.RequestedThemeVariant = dark ? ThemeVariant.Dark : ThemeVariant.Light;
+var services = new AppServices(new SamplePhoneLibrary(), new Settings());
 
-var main = new MainViewModel(new SamplePhoneLibrary());
-var window = new MainWindow { DataContext = main, Width = 412, Height = 872 };
-window.Show();
-
-void Snap(string name)
+void Snap(Window window, string name)
 {
-    Dispatcher.UIThread.RunJobs();
-    AvaloniaHeadlessPlatform.ForceRenderTimerTick();
-    // Let the cross-fade finish.
-    for (var i = 0; i < 20; i++) { Dispatcher.UIThread.RunJobs(); AvaloniaHeadlessPlatform.ForceRenderTimerTick(); Thread.Sleep(15); }
-    var frame = window.CaptureRenderedFrame();
+    window.Show();
+    for (var i = 0; i < 10; i++) { Dispatcher.UIThread.RunJobs(); AvaloniaHeadlessPlatform.ForceRenderTimerTick(); Thread.Sleep(10); }
     var path = Path.Combine(output, $"{name}{(dark ? "-dark" : "")}.png");
-    frame?.Save(path);
+    window.CaptureRenderedFrame()?.Save(path);
+    window.Close();
     Console.WriteLine(path);
 }
 
-main.GoHome();
-Snap("1-home");
-
-main.Home.Apps.First(a => a.Name == "Mensagens").Open.Execute(null);
-Snap("2-mensagens");
-
-((MessagesViewModel)main.Current).Items.First(i => i.IsGroup).Open.Execute(null);
-Snap("3-conversa");
-
-main.Home.Apps.First(a => a.Name == "Contactos").Open.Execute(null);
-Snap("4-contactos");
-
-((ContactsViewModel)main.Current).Sections[0].Items[0].Open.Execute(null);
-Snap("5-contacto");
-
-main.Home.Apps.First(a => a.Name == "Telefone").Open.Execute(null);
-Snap("6-telefone");
-
-main.Home.Apps.First(a => a.Name == "Fotos").Open.Execute(null);
-// There is no bridge on the build machine; show the sign-in form anyway.
-((PhotosViewModel)main.Current).State = PhotosState.SignedOut;
-((PhotosViewModel)main.Current).Message = null;
-Snap("7-fotos");
+Snap(App.CreateWindow(null, services), "0-launcher");
+foreach (var app in AppInfo.All)
+{
+    var window = App.CreateWindow(app, services);
+    if (window.DataContext is PhotosAppViewModel photos)
+    {
+        // There is no bridge on the build machine; show the sign-in form anyway.
+        photos.State = PhotosState.SignedOut;
+        photos.Message = null;
+    }
+    Snap(window, app.Argument);
+}
