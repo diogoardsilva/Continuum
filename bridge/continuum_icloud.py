@@ -55,6 +55,7 @@ class Bridge:
         DATA_DIR.mkdir(parents=True, exist_ok=True)
         self.api: PyiCloudService | None = None
         self.lock = threading.Lock()
+        self._assets: dict[str, Any] = {}
 
     # --- sign-in -----------------------------------------------------------
 
@@ -70,6 +71,24 @@ class Bridge:
         except PyiCloudFailedLoginException:
             return {"status": "error", "message": "Apple ID ou palavra-passe errada."}
         return self._status()
+
+    def resume(self, apple_id: str) -> dict[str, Any]:
+        """Reuses the trusted session saved by an earlier sign-in, without the password."""
+        try:
+            self.api = PyiCloudService(
+                apple_id,
+                None,
+                cookie_directory=str(DATA_DIR),
+                with_family=False,
+                refresh_interval=None,
+            )
+        except PyiCloudException:
+            self.api = None
+            return {"status": "signed_out"}
+        if self.api.requires_2fa or self.api.requires_2sa:
+            self.api = None
+            return {"status": "signed_out"}
+        return {"status": "ok", "name": self._my_name()}
 
     def submit_code(self, code: str) -> dict[str, Any]:
         api = self._require_api()
@@ -135,11 +154,12 @@ class Bridge:
                 continue
             if len(items) >= limit:
                 break
+            self._assets[asset.id] = asset
             items.append(self._asset(asset))
         return items
 
     def photo_bytes(self, asset_id: str, version: str) -> bytes:
-        asset = self._require_api().photos.all.get(asset_id)
+        asset = self._assets.get(asset_id) or self._require_api().photos.all.get(asset_id)
         data = asset.download(version) if asset else None
         if data is None:
             raise KeyError(asset_id)
@@ -266,7 +286,9 @@ def run_server(port: int, token: str) -> int:
 
         def do_POST(self) -> None:  # noqa: N802
             path = urlparse(self.path).path
-            if path == "/login":
+            if path == "/resume":
+                self._handle(lambda: bridge.resume(self._json()["apple_id"]))
+            elif path == "/login":
                 self._handle(lambda: bridge.login(**self._json()))
             elif path == "/code":
                 self._handle(lambda: bridge.submit_code(self._json()["code"]))

@@ -26,6 +26,17 @@ public sealed partial class MainViewModel : ObservableObject
 
     public IPhoneLibrary Library { get; }
     public HomeViewModel Home { get; }
+    public Settings Settings { get; } = Settings.Load();
+
+    Task<ICloudBridge>? _bridge;
+
+    /// <summary>Starts Continuum.iCloud.exe the first time an app needs iCloud.com.</summary>
+    public Task<ICloudBridge> GetICloudAsync() => _bridge ??= ICloudBridge.StartAsync();
+
+    public async ValueTask ShutdownAsync()
+    {
+        if (_bridge is { IsCompletedSuccessfully: true }) await _bridge.Result.DisposeAsync();
+    }
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsHome), nameof(CanGoBack))]

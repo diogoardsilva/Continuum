@@ -55,3 +55,9 @@ Snap("5-contacto");
 
 main.Home.Apps.First(a => a.Name == "Telefone").Open.Execute(null);
 Snap("6-telefone");
+
+main.Home.Apps.First(a => a.Name == "Fotos").Open.Execute(null);
+// There is no bridge on the build machine; show the sign-in form anyway.
+((PhotosViewModel)main.Current).State = PhotosState.SignedOut;
+((PhotosViewModel)main.Current).Message = null;
+Snap("7-fotos");

@@ -19,6 +19,7 @@ public partial class App : Application
             var main = new MainViewModel(library);
             main.GoHome();
             desktop.MainWindow = new MainWindow { DataContext = main };
+            desktop.Exit += (_, _) => main.ShutdownAsync().AsTask().Wait(TimeSpan.FromSeconds(2));
         }
         base.OnFrameworkInitializationCompleted();
     }

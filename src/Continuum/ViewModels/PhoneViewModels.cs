@@ -29,9 +29,3 @@ public sealed class PhoneViewModel : PageViewModel
     static bool ContactDirectoryKeyEquals(string a, string? b) =>
         b is not null && Core.Contacts.ContactDirectory.Key(a) == Core.Contacts.ContactDirectory.Key(b);
 }
-
-public sealed class PhotosViewModel : PageViewModel
-{
-    public PhotosViewModel(MainViewModel main) : base(main) { }
-    public override string Title => "Fotos";
-}
