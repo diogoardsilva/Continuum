@@ -17,6 +17,7 @@ Fase 0: testes de viabilidade no hardware real.
 | O Windows consegue fazer de rato Bluetooth para o iPhone? | `tools/BtHidProbe` | à espera de teste |
 | Ver o ecrã do iPhone por AirPlay | `Continuum-AirPlay` (UxPlay) | à espera de teste |
 | Tocar no iPhone a partir do PC (WebDriverAgent) | `Continuum-USB` (go-ios) | à espera de teste |
+| Ler contactos com fotos (iCloud ou backup) | `tools/ContactsTool` | à espera de teste |
 
 ## Descarregar
 
@@ -25,6 +26,7 @@ Cada commit em `main` gera uma [versão de desenvolvimento](../../releases/tag/d
 - `Continuum.BtHidProbe.exe`: o teste do rato Bluetooth.
 - `Continuum-win-x64.zip`: a app (por agora só a janela).
 - `Continuum-AirPlay-win-x64.zip`: o recetor AirPlay (UxPlay) pronto a usar.
+- `Continuum.Contactos.exe`: o teste dos contactos (iCloud ou backup).
 - `Continuum-USB-win-x64.zip`: go-ios e o teste de toques pelo WebDriverAgent.
 - `WebDriverAgent-unsigned.ipa`: o WebDriverAgent por assinar, para instalar com a tua Apple ID.
 
@@ -55,6 +57,15 @@ Guia completo passo a passo: [docs/INSTALAR-NO-IPHONE.md](docs/INSTALAR-NO-IPHON
 5. Extrai `Continuum-USB-win-x64.zip` e abre `test-wda.cmd`.
 
 O teste leva o iPhone ao ecrã principal e toca no centro do ecrã.
+
+## Teste dos contactos
+
+Abre `Continuum.Contactos.exe` e escolhe:
+
+1. **iCloud**: precisas da Apple ID e de uma *palavra-passe para apps*, que crias em [account.apple.com](https://account.apple.com) > Início de sessão e segurança > Palavras-passe para apps. Usa o protocolo oficial dos contactos (CardDAV). A palavra-passe não fica guardada.
+2. **Backup**: faz primeiro um backup na app Apple Devices (iPhone > Backups > "Fazer backup de todos os dados para este PC", **sem** encriptação).
+
+O teste mostra quantos contactos encontrou e exporta tudo para `Documentos\Continuum\Contactos` (um `contactos.csv` e as fotos).
 
 ## Compilar
 
