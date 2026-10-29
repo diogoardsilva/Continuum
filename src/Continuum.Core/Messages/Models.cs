@@ -1,6 +1,6 @@
 namespace Continuum.Core.Messages;
 
-public sealed record Attachment(string? FileName, string? MimeType, string? PathOnPhone, string? PathInBackup);
+public sealed record Attachment(string? FileName, string? MimeType, string? PathOnPhone);
 
 public sealed class Message
 {

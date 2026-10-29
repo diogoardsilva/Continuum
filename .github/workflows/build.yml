@@ -152,19 +152,25 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Build iCloud.com bridge
+      - name: Build bridges
         shell: pwsh
         run: |
           pip install -r bridge/requirements.txt
           pyinstaller --onefile --console --name Continuum.iCloud `
-            --collect-all pyicloud --collect-data certifi `
+            --collect-all pyicloud --collect-data certifi --collect-data fido2 `
             --distpath publish bridge/continuum_icloud.py
+          pyinstaller --onefile --console --name Continuum.iPhone `
+            --collect-all pymobiledevice3 --collect-data certifi `
+            --distpath publish bridge/continuum_iphone.py
           ./publish/Continuum.iCloud.exe --help
+          if ($LASTEXITCODE -ne 0) { Write-Output "::error::Continuum.iCloud.exe failed to start"; exit 1 }
 
       - uses: actions/upload-artifact@v4
         with:
-          name: continuum-icloud-win-x64
-          path: publish/Continuum.iCloud.exe
+          name: continuum-bridges-win-x64
+          path: |
+            publish/Continuum.iCloud.exe
+            publish/Continuum.iPhone.exe
 
   release:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'

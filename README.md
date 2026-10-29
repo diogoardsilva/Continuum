@@ -18,7 +18,8 @@ Fase 0: testes de viabilidade no hardware real.
 | Ver o ecrã do iPhone por AirPlay | `Continuum-AirPlay` (UxPlay) | à espera de teste |
 | Tocar no iPhone a partir do PC (WebDriverAgent) | `Continuum-USB` (go-ios) | à espera de teste |
 | Ler contactos com fotos (iCloud ou backup) | `tools/ContactsTool` | à espera de teste |
-| Iniciar sessão no iCloud.com e ler contactos e fotos | `bridge/` (pyicloud) | à espera de teste |
+| Iniciar sessão no iCloud.com e ler contactos e fotos | `bridge/continuum_icloud.py` (pyicloud) | à espera de teste |
+| Copiar do iPhone por cabo só mensagens, chamadas e contactos | `bridge/continuum_iphone.py` (pymobiledevice3) | à espera de teste |
 
 ## Descarregar
 
@@ -27,6 +28,7 @@ Cada commit em `main` gera uma [versão de desenvolvimento](../../releases/tag/d
 - `Continuum.BtHidProbe.exe`: o teste do rato Bluetooth.
 - `Continuum-win-x64.zip`: a app (por agora só a janela).
 - `Continuum-AirPlay-win-x64.zip`: o recetor AirPlay (UxPlay) pronto a usar.
+- `Continuum.iPhone.exe`: copia do iPhone (por cabo) as mensagens, o histórico de chamadas e os contactos.
 - `Continuum.iCloud.exe`: o teste do iCloud.com (sessão, contactos e fotos).
 - `Continuum.Contactos.exe`: o teste dos contactos (iCloud ou backup).
 - `Continuum-USB-win-x64.zip`: go-ios e o teste de toques pelo WebDriverAgent.
@@ -65,6 +67,12 @@ O teste leva o iPhone ao ecrã principal e toca no centro do ecrã.
 Abre `Continuum.iCloud.exe`. Pede a Apple ID, a palavra-passe normal e o código de 6 dígitos, exatamente como o iCloud.com no browser. Depois lê os contactos (com fotos) e as 20 fotos mais recentes e guarda-os em `Documentos\Continuum\iCloud`.
 
 A palavra-passe não fica guardada. A sessão confiável fica em `%LOCALAPPDATA%\Continuum\icloud`, para não pedir o código sempre.
+
+## Teste da sincronização do iPhone
+
+1. Instala a app **Apple Devices** (Microsoft Store) ou o iTunes: dá ao Windows o controlador USB do iPhone.
+2. Liga o iPhone por cabo, desbloqueia-o e aceita "Confiar".
+3. Abre `Continuum.iPhone.exe`. Copia só as mensagens (com anexos), as chamadas e os contactos para `%LOCALAPPDATA%\Continuum\backup`. A primeira vez demora (o iPhone envia o backup inteiro e o Continuum guarda só o que precisa); as seguintes são rápidas.
 
 ## Teste dos contactos
 
