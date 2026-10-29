@@ -16,7 +16,7 @@ Fase 0: testes de viabilidade no hardware real.
 |---|---|---|
 | O Windows consegue fazer de rato Bluetooth para o iPhone? | `tools/BtHidProbe` | à espera de teste |
 | Ver o ecrã do iPhone por AirPlay | `Continuum-AirPlay` (UxPlay) | à espera de teste |
-| Tocar no iPhone a partir do PC (WebDriverAgent) | | por fazer |
+| Tocar no iPhone a partir do PC (WebDriverAgent) | `Continuum-USB` (go-ios) | à espera de teste |
 
 ## Descarregar
 
@@ -25,6 +25,8 @@ Cada commit em `main` gera uma [versão de desenvolvimento](../../releases/tag/d
 - `Continuum.BtHidProbe.exe`: o teste do rato Bluetooth.
 - `Continuum-win-x64.zip`: a app (por agora só a janela).
 - `Continuum-AirPlay-win-x64.zip`: o recetor AirPlay (UxPlay) pronto a usar.
+- `Continuum-USB-win-x64.zip`: go-ios e o teste de toques pelo WebDriverAgent.
+- `WebDriverAgent-unsigned.ipa`: o WebDriverAgent por assinar, para instalar com a tua Apple ID.
 
 ## Teste do rato Bluetooth
 
@@ -41,6 +43,18 @@ Cada commit em `main` gera uma [versão de desenvolvimento](../../releases/tag/d
 4. O ecrã do iPhone deve aparecer numa janela no PC.
 
 Se o Continuum não aparecer na lista do iPhone, quase sempre é a firewall: confirma que a rede Wi‑Fi está marcada como privada no Windows.
+
+## Teste de toques pelo WebDriverAgent (USB)
+
+Só é preciso fazer a preparação uma vez (e reinstalar o WebDriverAgent a cada 7 dias com uma Apple ID gratuita):
+
+1. Instala a app **Apple Devices** da Microsoft Store (ou o iTunes), liga o iPhone por cabo e aceita "Confiar neste computador".
+2. Instala o [Sideloadly](https://sideloadly.io), arrasta para lá o `WebDriverAgent-unsigned.ipa`, escolhe a tua Apple ID e carrega em Start.
+3. No iPhone: Definições > Geral > VPN e gestão de dispositivos > confia no teu perfil de programador.
+4. No iPhone: Definições > Privacidade e segurança > Modo de programador > ligar (o iPhone reinicia).
+5. Extrai `Continuum-USB-win-x64.zip` e abre `test-wda.cmd`.
+
+O teste leva o iPhone ao ecrã principal e toca no centro do ecrã.
 
 ## Compilar
 

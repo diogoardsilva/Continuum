@@ -19,8 +19,24 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.26'
+
       - name: Build
         run: dotnet build Continuum.sln -c Release
+
+      # go-ios talks to the iPhone over USB (tunnel, developer image, WebDriverAgent).
+      - name: Build go-ios
+        shell: pwsh
+        env:
+          GOFLAGS: ''
+        run: |
+          go install github.com/danielpaulus/go-ios@v1.3.2
+          New-Item -ItemType Directory -Force publish/Continuum-USB | Out-Null
+          Copy-Item "$(go env GOPATH)/bin/go-ios.exe" publish/Continuum-USB/ios.exe
+          Copy-Item usb/test-wda.ps1, usb/test-wda.cmd publish/Continuum-USB/
+          Compress-Archive publish/Continuum-USB/* publish/Continuum-USB-win-x64.zip
 
       - name: Publish
         shell: pwsh
@@ -38,6 +54,7 @@ jobs:
           path: |
             publish/Continuum-win-x64.zip
             publish/Continuum.BtHidProbe.exe
+            publish/Continuum-USB-win-x64.zip
 
   airplay:
     runs-on: windows-latest
@@ -86,9 +103,43 @@ jobs:
           name: continuum-airplay-win-x64
           path: publish/Continuum-AirPlay-win-x64.zip
 
+  wda:
+    runs-on: macos-latest
+    steps:
+      - name: Fetch WebDriverAgent
+        run: |
+          tag=$(git ls-remote --tags --refs https://github.com/appium/WebDriverAgent 'v*' \
+                | awk -F/ '{print $3}' | sort -V | tail -1)
+          echo "WebDriverAgent $tag"
+          git clone -q --depth 1 --branch "$tag" https://github.com/appium/WebDriverAgent wda
+
+      # Unsigned device build; it gets signed on Windows with the user's Apple ID.
+      - name: Build unsigned runner
+        working-directory: wda
+        run: |
+          xcodebuild build-for-testing \
+            -project WebDriverAgent.xcodeproj \
+            -scheme WebDriverAgentRunner \
+            -destination generic/platform=iOS \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
+            | tail -20
+
+      - name: Package IPA
+        run: |
+          mkdir -p dist/Payload
+          cp -R wda/build/Build/Products/Debug-iphoneos/WebDriverAgentRunner-Runner.app dist/Payload/
+          ls dist/Payload/WebDriverAgentRunner-Runner.app/Frameworks dist/Payload/WebDriverAgentRunner-Runner.app/PlugIns
+          (cd dist && zip -qry ../WebDriverAgent-unsigned.ipa Payload)
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: webdriveragent-unsigned
+          path: WebDriverAgent-unsigned.ipa
+
   release:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: [windows, airplay]
+    needs: [windows, airplay, wda]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
