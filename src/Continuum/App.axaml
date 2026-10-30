@@ -33,12 +33,15 @@
           <SolidColorBrush x:Key="IosGroupedBackground" Color="#F2F2F7"/>
           <SolidColorBrush x:Key="IosCell" Color="#FFFFFF"/>
           <SolidColorBrush x:Key="IosLabel" Color="#000000"/>
-          <SolidColorBrush x:Key="IosSecondaryLabel" Color="#8A8A8E"/>
+          <SolidColorBrush x:Key="IosSecondaryLabel" Color="#6C6C70"/>
           <SolidColorBrush x:Key="IosSeparator" Color="#D1D1D6"/>
           <SolidColorBrush x:Key="IosFill" Color="#E3E3E8"/>
           <SolidColorBrush x:Key="IosBlue" Color="#007AFF"/>
           <SolidColorBrush x:Key="IosGreen" Color="#34C759"/>
           <SolidColorBrush x:Key="IosRed" Color="#FF3B30"/>
+          <SolidColorBrush x:Key="IosRedText" Color="#D70015"/>
+          <SolidColorBrush x:Key="IosLink" Color="#0068DA"/>
+          <SolidColorBrush x:Key="IosCardFill" Color="#F2F2F7"/>
           <SolidColorBrush x:Key="IosBubbleIncoming" Color="#E9E9EB"/>
           <SolidColorBrush x:Key="IosBubbleIncomingText" Color="#000000"/>
           <SolidColorBrush x:Key="IosBar" Color="#F7F7F7" Opacity="0.94"/>
@@ -60,6 +63,9 @@
           <SolidColorBrush x:Key="IosBlue" Color="#0A84FF"/>
           <SolidColorBrush x:Key="IosGreen" Color="#30D158"/>
           <SolidColorBrush x:Key="IosRed" Color="#FF453A"/>
+          <SolidColorBrush x:Key="IosRedText" Color="#FF6961"/>
+          <SolidColorBrush x:Key="IosLink" Color="#419CFF"/>
+          <SolidColorBrush x:Key="IosCardFill" Color="#1C1C1E"/>
           <SolidColorBrush x:Key="IosBubbleIncoming" Color="#262628"/>
           <SolidColorBrush x:Key="IosBubbleIncomingText" Color="#FFFFFF"/>
           <SolidColorBrush x:Key="IosBar" Color="#161616" Opacity="0.94"/>

@@ -26,7 +26,11 @@
     <Setter Property="Foreground" Value="{DynamicResource IosSecondaryLabel}"/>
   </Style>
   <Style Selector="TextBlock.blue">
-    <Setter Property="Foreground" Value="{DynamicResource IosBlue}"/>
+    <Setter Property="Foreground" Value="{DynamicResource IosLink}"/>
+  </Style>
+  <Style Selector="SelectableTextBlock.value">
+    <Setter Property="Foreground" Value="{DynamicResource IosLink}"/>
+    <Setter Property="FontSize" Value="15"/>
   </Style>
 
   <!-- Rows and nav buttons are plain, like iOS: no Fluent hover boxes. -->
@@ -39,15 +43,32 @@
     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
     <Setter Property="Cursor" Value="Hand"/>
   </Style>
+  <!-- Desktop: everything clickable answers the pointer. -->
   <Style Selector="Button.plain:pointerover /template/ ContentPresenter">
-    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="Background" Value="{DynamicResource IosFill}"/>
+    <Setter Property="Opacity" Value="0.85"/>
   </Style>
   <Style Selector="Button.plain:pressed /template/ ContentPresenter">
     <Setter Property="Background" Value="{DynamicResource IosFill}"/>
   </Style>
   <Style Selector="Button.nav">
     <Setter Property="HorizontalAlignment" Value="Left"/>
-    <Setter Property="Foreground" Value="{DynamicResource IosBlue}"/>
+    <Setter Property="Foreground" Value="{DynamicResource IosLink}"/>
+  </Style>
+  <Style Selector="Button.nav:pointerover /template/ ContentPresenter">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="Opacity" Value="0.7"/>
+  </Style>
+  <Style Selector="Button.link">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="Foreground" Value="{DynamicResource IosLink}"/>
+    <Setter Property="FontSize" Value="13"/>
+    <Setter Property="Cursor" Value="Hand"/>
+  </Style>
+  <Style Selector="Button.link:pointerover /template/ ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource IosFill}"/>
+    <Setter Property="Foreground" Value="{DynamicResource IosLink}"/>
   </Style>
   <Style Selector="Button.nav:pressed /template/ ContentPresenter">
     <Setter Property="Background" Value="Transparent"/>
@@ -106,9 +127,14 @@
   <Style Selector="Border.pane">
     <Setter Property="Background" Value="{DynamicResource IosBackground}"/>
   </Style>
+  <!-- Grouped rows on the content pane; ClipToBounds hides the last row's separator. -->
   <Style Selector="Border.card">
-    <Setter Property="Background" Value="{DynamicResource IosCell}"/>
+    <Setter Property="Background" Value="{DynamicResource IosCardFill}"/>
     <Setter Property="CornerRadius" Value="12"/>
+    <Setter Property="ClipToBounds" Value="True"/>
+  </Style>
+  <Style Selector="Border.card > ItemsControl">
+    <Setter Property="Margin" Value="0,0,0,-1"/>
   </Style>
 
   <Style Selector="ScrollViewer">

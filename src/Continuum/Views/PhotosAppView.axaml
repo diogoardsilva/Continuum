@@ -16,7 +16,16 @@
       <Setter Property="HorizontalAlignment" Value="Stretch"/>
       <Setter Property="HorizontalContentAlignment" Value="Center"/>
       <Setter Property="Padding" Value="12,10"/>
-      <Setter Property="FontWeight" Value="SemiBold"/>
+      <!-- Bold keeps white on blue above the 3:1 large/bold text minimum in both appearances. -->
+      <Setter Property="FontWeight" Value="Bold"/>
+    </Style>
+    <Style Selector="Button.primary:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="{DynamicResource IosBlue}"/>
+      <Setter Property="Foreground" Value="White"/>
+      <Setter Property="Opacity" Value="0.88"/>
+    </Style>
+    <Style Selector="Button.primary:pressed /template/ ContentPresenter">
+      <Setter Property="Opacity" Value="0.7"/>
     </Style>
   </UserControl.Styles>
 

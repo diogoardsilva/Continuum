@@ -30,14 +30,14 @@
             <TextBlock Text="{Binding Name}" FontSize="28" FontWeight="SemiBold" HorizontalAlignment="Center"/>
             <TextBlock Text="{Binding Organization}" Classes="secondary" HorizontalAlignment="Center" IsVisible="{Binding HasOrganization}"/>
           </StackPanel>
-          <Border Classes="card" Background="{DynamicResource IosGroupedBackground}">
+          <Border Classes="card">
             <ItemsControl ItemsSource="{Binding Rows}">
               <ItemsControl.ItemTemplate>
                 <DataTemplate x:DataType="vm:ContactRow">
                   <Grid Margin="16,0,0,0">
                     <StackPanel Margin="0,10,16,10" Spacing="2">
                       <TextBlock Text="{Binding Label}" FontSize="13" Classes="secondary"/>
-                      <SelectableTextBlock Text="{Binding Value}" Foreground="{DynamicResource IosBlue}" FontSize="15"/>
+                      <SelectableTextBlock Classes="value" Text="{Binding Value}"/>
                     </StackPanel>
                     <Border Classes="separator"/>
                   </Grid>

@@ -28,7 +28,7 @@ public abstract partial class CallsAppViewModel : ObservableObject
         _all = library.Calls.Where(include).Select(call =>
         {
             var contact = library.Directory.Find(call.Address);
-            var name = contact?.DisplayName ?? call.Name ?? call.Address ?? "Desconhecido";
+            var name = contact?.DisplayName ?? call.Name ?? Format.Phone(call.Address) ?? "Desconhecido";
             var detail = call.Kind switch
             {
                 CallKind.FaceTimeVideo => "Vídeo FaceTime",

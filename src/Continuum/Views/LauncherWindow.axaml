@@ -30,7 +30,7 @@
     </ItemsControl>
     <StackPanel Grid.Row="2" Spacing="8">
       <TextBlock Text="{Binding Source}" Classes="caption" HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center" TextTrimming="None"/>
-      <Button Content="Adicionar as apps ao menu Iniciar" Command="{Binding InstallShortcutsCommand}" HorizontalAlignment="Center"/>
+      <Button Classes="link" Content="Adicionar as apps ao menu Iniciar" Command="{Binding InstallShortcutsCommand}" HorizontalAlignment="Center"/>
       <TextBlock Text="{Binding Status}" Classes="caption" HorizontalAlignment="Center"/>
     </StackPanel>
   </Grid>

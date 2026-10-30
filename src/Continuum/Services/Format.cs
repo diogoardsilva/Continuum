@@ -43,5 +43,17 @@ public static class Format
         return parts.Length > 1 ? first + char.ToUpperInvariant(parts[^1][0]) : first;
     }
 
+    /// <summary>"+351210000000" as "+351 210 000 000"; anything else unchanged.</summary>
+    public static string? Phone(string? number)
+    {
+        if (number is null) return null;
+        var digits = new string(number.Where(char.IsDigit).ToArray());
+        if (number.StartsWith('+') && digits.StartsWith("351") && digits.Length == 12)
+            return $"+351 {digits[3..6]} {digits[6..9]} {digits[9..]}";
+        if (!number.StartsWith('+') && digits.Length == 9 && number.All(c => char.IsDigit(c) || c == ' '))
+            return $"{digits[..3]} {digits[3..6]} {digits[6..]}";
+        return number;
+    }
+
     static string Capitalize(string s) => s.Length == 0 ? s : char.ToUpper(s[0], Pt) + s[1..];
 }
