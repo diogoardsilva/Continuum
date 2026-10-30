@@ -19,6 +19,7 @@ import os
 import secrets
 import sys
 import threading
+import traceback
 from datetime import datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -266,8 +267,18 @@ def run_server(port: int, token: str) -> int:
             self.wfile.write(data)
 
         def _json(self) -> dict[str, Any]:
-            length = int(self.headers.get("Content-Length") or 0)
-            return json.loads(self.rfile.read(length) or b"{}")
+            if "chunked" in (self.headers.get("Transfer-Encoding") or "").lower():
+                body = b""
+                while True:
+                    size = int(self.rfile.readline().split(b";")[0].strip() or b"0", 16)
+                    if size == 0:
+                        self.rfile.readline()
+                        break
+                    body += self.rfile.read(size)
+                    self.rfile.readline()
+            else:
+                body = self.rfile.read(int(self.headers.get("Content-Length") or 0))
+            return json.loads(body or b"{}")
 
         def _handle(self, fn: Any) -> None:
             if not self._authorized():
@@ -283,13 +294,17 @@ def run_server(port: int, token: str) -> int:
                 self._send(404, {"error": "not found"})
             except (PyiCloudException, RuntimeError) as error:
                 self._send(400, {"error": str(error)})
+            except Exception as error:  # noqa: BLE001 - always answer, never drop the connection
+                with open(DATA_DIR / "bridge.log", "a", encoding="utf-8") as log:
+                    log.write(traceback.format_exc() + "\n")
+                self._send(500, {"error": f"{type(error).__name__}: {error}"})
 
         def do_POST(self) -> None:  # noqa: N802
             path = urlparse(self.path).path
             if path == "/resume":
                 self._handle(lambda: bridge.resume(self._json()["apple_id"]))
             elif path == "/login":
-                self._handle(lambda: bridge.login(**self._json()))
+                self._handle(lambda: (lambda b: bridge.login(b["apple_id"], b["password"]))(self._json()))
             elif path == "/code":
                 self._handle(lambda: bridge.submit_code(self._json()["code"]))
             else:

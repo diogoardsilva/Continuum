@@ -38,7 +38,8 @@ public sealed class ICloudBridge : IAsyncDisposable
     ICloudBridge(Process process, int port, string token)
     {
         _process = process;
-        _http = new HttpClient { BaseAddress = new Uri($"http://127.0.0.1:{port}/"), Timeout = TimeSpan.FromMinutes(3) };
+        // Loopback only: never route through a system proxy.
+        _http = new HttpClient(new HttpClientHandler { UseProxy = false }) { BaseAddress = new Uri($"http://127.0.0.1:{port}/"), Timeout = TimeSpan.FromMinutes(3) };
         _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
     }
 
@@ -81,15 +82,25 @@ public sealed class ICloudBridge : IAsyncDisposable
 
     async Task<BridgeStatus> PostAsync(string path, object body)
     {
-        using var response = await _http.PostAsJsonAsync(path, body);
+        // Buffered JSON so the request carries Content-Length; JsonContent would be sent chunked,
+        // which the bridge's http.server can't read.
+        using var content = new StringContent(JsonSerializer.Serialize(body), System.Text.Encoding.UTF8, "application/json");
+        using var response = await _http.PostAsync(path, content);
         var text = await response.Content.ReadAsStringAsync();
         if (response.IsSuccessStatusCode)
         {
             return JsonSerializer.Deserialize<BridgeStatus>(text) ?? new BridgeStatus("error", "Resposta vazia.", null, null);
         }
-        using var error = JsonDocument.Parse(text);
-        var message = error.RootElement.TryGetProperty("error", out var e) ? e.GetString() : response.ReasonPhrase;
-        return new BridgeStatus("error", message, null, null);
+        try
+        {
+            using var error = JsonDocument.Parse(text);
+            var message = error.RootElement.TryGetProperty("error", out var e) ? e.GetString() : response.ReasonPhrase;
+            return new BridgeStatus("error", message, null, null);
+        }
+        catch (JsonException)
+        {
+            return new BridgeStatus("error", response.ReasonPhrase, null, null);
+        }
     }
 
     public ValueTask DisposeAsync()
